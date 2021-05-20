@@ -5,7 +5,7 @@ import threading
 
 inicioPuente = 10
 largoPuente = 20
-
+semaforoVaquita = threading.Semaphore(1)
 cantVacas = 5
 
 class Vaca(threading.Thread):
@@ -23,7 +23,20 @@ class Vaca(threading.Thread):
 
     def run(self):
         while(True):
+            #semaforoVaquita.acquire()
+            #try:
+            #    self.avanzar()
+            #finally:
+            #    semaforoVaquita.release()
             self.avanzar()
+            while self.posicion == inicioPuente:
+                semaforoVaquita.acquire()
+                self.avanzar()
+            while self.posicion == (largoPuente + 10):
+                semaforoVaquita.release()
+                self.avanzar()
+            if self.posicion == 50:
+                self.posicion = 0
 
 vacas = []
 for i in range(cantVacas):
